@@ -2,18 +2,26 @@
 
 // libs
 import * as THREE from 'three';
-import {TweenMax} from "gsap";
+import TweenMax from "gsap";
 var glslify = require('glslify');
 import OrbitContructor from 'three-orbit-controls';
 var OrbitControls = OrbitContructor(THREE);
 import Stats from 'stats.js';
 
 
-export default class Scene {
+require('./postprocessing/EffectComposer');
+require('./postprocessing/RenderPass');
+require('./postprocessing/ShaderPass');
+require('./postprocessing/MaskPass');
+require('./postprocessing/CopyShader');
+require('./postprocessing/ScreenShader');
+
+
+
+class Scene {
 
 	constructor() {
 		let that = this;
-
 
 		this.start();
 	}
@@ -26,6 +34,7 @@ export default class Scene {
 		this.scene;
 
 		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
+		this.camera.position.set(0, 20, 360);
 		this.scene = new THREE.Scene();
 		this.scene.add(this.camera);
 
@@ -48,8 +57,18 @@ export default class Scene {
 		this.controls.update();
 
 
-		this.addLights();
 
+		// postprocessing
+		this.composer = new THREE.EffectComposer(this.renderer);
+		this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
+		let effect = new THREE.ShaderPass(THREE.ScreenShader);
+		effect.renderToScreen = true;
+		this.composer.addPass(effect);
+
+
+
+		this.addLights();
+		this.addObjects();
 		this.animate();
 	}
 
@@ -61,6 +80,23 @@ export default class Scene {
 		this.scene.add(this.directionalLight);
 	}
 
+	addObjects() {
+		var geometry = new THREE.SphereGeometry(1, 4, 4);
+		for (var i = 0; i < 100; i++) {
+			var material = new THREE.MeshPhongMaterial({
+				color: 0xffffff * Math.random(),
+				shading: THREE.FlatShading
+			});
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
+			mesh.position.multiplyScalar(Math.random() * 200);
+			mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
+			mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 20;
+			this.scene.add(mesh);
+		}
+	}
+
+
 
 	animate() {
 		requestAnimationFrame(this.animate.bind(this));
@@ -71,6 +107,10 @@ export default class Scene {
 	render() {
 		if (this.stats) this.stats.update();
 
+		
 		this.renderer.render(this.scene, this.camera);
+		if (this.composer) this.composer.render();
 	}
 }
+
+export default Scene;

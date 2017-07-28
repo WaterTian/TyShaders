@@ -9,12 +9,18 @@ var OrbitControls = OrbitContructor(THREE);
 import Stats from 'stats.js';
 
 
-require('./postprocessing/EffectComposer');
-require('./postprocessing/RenderPass');
-require('./postprocessing/ShaderPass');
-require('./postprocessing/MaskPass');
-require('./postprocessing/CopyShader');
-require('./postprocessing/ScreenShader');
+import './postprocessing/EffectComposer';
+import './postprocessing/RenderPass';
+import './postprocessing/ShaderPass';
+import './postprocessing/MaskPass';
+import './postprocessing/CopyShader';
+import './postprocessing/ScreenShader';
+// require('./postprocessing/EffectComposer');
+// require('./postprocessing/RenderPass');
+// require('./postprocessing/ShaderPass');
+// require('./postprocessing/MaskPass');
+// require('./postprocessing/CopyShader');
+// require('./postprocessing/ScreenShader');
 
 
 

@@ -19,5 +19,5 @@ THREE.ScreenShader = {
 		}
 	},
 	vertexShader: glslify('../glsl/water.vert'),
-	fragmentShader: glslify('../glsl/effect.frag')
+	fragmentShader: glslify('../glsl/effect2.frag')
 };

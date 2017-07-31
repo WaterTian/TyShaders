@@ -22,6 +22,9 @@ import './postprocessing/ScreenShader';
 // require('./postprocessing/CopyShader');
 // require('./postprocessing/ScreenShader');
 
+import Particles from './Particles';
+import Simulation from './Simulation';
+
 
 
 class Scene {
@@ -39,8 +42,8 @@ class Scene {
 		this.camera;
 		this.scene;
 
-		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 2000);
-		this.camera.position.set(0, 20, 360);
+		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+		this.camera.position.set(0, 0, 1000);
 		this.scene = new THREE.Scene();
 		this.scene.add(this.camera);
 
@@ -64,22 +67,24 @@ class Scene {
 
 
 
-		// postprocessing
-		this.composer = new THREE.EffectComposer(this.renderer);
-		this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
-		let effect = new THREE.ShaderPass(THREE.ScreenShader);
-		effect.renderToScreen = true;
-		this.composer.addPass(effect);
+		// // postprocessing
+		// this.composer = new THREE.EffectComposer(this.renderer);
+		// this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
+		// let effect = new THREE.ShaderPass(THREE.ScreenShader);
+		// effect.renderToScreen = true;
+		// this.composer.addPass(effect);
 
 
 
 		this.addLights();
-		this.addObjects();
+		// this.addObjects();
+		this.initSim();
+		this.initParticles();
 		this.animate();
 	}
 
 	addLights() {
-		this.ambient = new THREE.AmbientLight(0x666666);
+		this.ambient = new THREE.AmbientLight(0x333333);
 		this.scene.add(this.ambient);
 		this.directionalLight = new THREE.DirectionalLight(0x887766);
 		this.directionalLight.position.set(-1, 1, 1).normalize();
@@ -102,6 +107,16 @@ class Scene {
 		}
 	}
 
+	initSim() {
+		this.Sim = new Simulation(this.renderer,this.scene,this.camera);
+
+	}
+
+	initParticles() {
+		this.particles = new Particles();
+		this.scene.add(this.particles);
+	}
+
 
 
 	animate() {
@@ -113,7 +128,11 @@ class Scene {
 	render() {
 		if (this.stats) this.stats.update();
 
-		
+
+		this.particles.update();
+		this.Sim.render();
+
+
 		this.renderer.render(this.scene, this.camera);
 		if (this.composer) this.composer.render();
 	}

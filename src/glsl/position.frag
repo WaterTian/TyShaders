@@ -6,7 +6,6 @@ uniform float time;
 
 const float INTERSECTION_PRECISION = 1.0;
 
-#pragma glslify: random = require(glsl-random)
 
 void main() {
 

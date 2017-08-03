@@ -26,6 +26,8 @@ import Particles from './Particles';
 import Simulation from './Simulation';
 
 
+var time = 0;
+
 
 class Scene {
 
@@ -57,9 +59,9 @@ class Scene {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);
 
-		this.renderer.gammaInput = true;
-		this.renderer.gammaOutput = true;
-		this.renderer.shadowMap.enabled = true;
+		// this.renderer.gammaInput = true;
+		// this.renderer.gammaOutput = true;
+		// this.renderer.shadowMap.enabled = true;
 
 		// controls
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -120,17 +122,19 @@ class Scene {
 
 
 	animate() {
+		let newTime = Date.now();
 		requestAnimationFrame(this.animate.bind(this));
-		this.render();
+		this.render(newTime - time);
+		time = newTime;
 	}
 
 	// main animation loop
-	render() {
+	render(dt) {
 		if (this.stats) this.stats.update();
 
 
-		this.particles.update();
-		this.Sim.render();
+		this.particles.update(this.Sim.positionRenderTarget);
+		this.Sim.update(dt);
 
 
 		this.renderer.render(this.scene, this.camera);

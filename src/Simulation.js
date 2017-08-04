@@ -5,8 +5,8 @@ var glslify = require('glslify');
 var undef;
 
 
-const TEXTURE_WIDTH = 256;
-const TEXTURE_HEIGHT = 256;
+const TEXTURE_WIDTH = 512;
+const TEXTURE_HEIGHT = 512;
 const AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 
@@ -141,8 +141,8 @@ class Simulation {
 			positions[i4 + 3] = Math.random();
 		}
 		var texture = new THREE.DataTexture(positions, TEXTURE_WIDTH, TEXTURE_HEIGHT, THREE.RGBAFormat, THREE.FloatType);
-		texture.wrapS = THREE.ClampToEdgeWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
+		texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
 		texture.minFilter = THREE.NearestFilter;
 		texture.magFilter = THREE.NearestFilter;
 		texture.needsUpdate = true;
@@ -168,7 +168,7 @@ class Simulation {
 		this.positionShader.uniforms.time.value += dt * 0.01;
 
 		this.renderer.render(this.scene, this.camera, this.positionRenderTarget ,true);
-		this.renderer.render(this.scene, this.camera);
+		// this.renderer.render(this.scene, this.camera);
 	}
 
 	update(dt) {

@@ -107,8 +107,7 @@ vec3 snoiseVec3( vec3 x ){
 }
 
 
-vec3 curlNoise( vec3 p ){
-  
+vec3 curlNoise( vec3 p){
   const float e = .1;
   vec3 dx = vec3( e   , 0.0 , 0.0 );
   vec3 dy = vec3( 0.0 , e   , 0.0 );
@@ -127,29 +126,36 @@ vec3 curlNoise( vec3 p ){
 
   const float divisor = 1.0 / ( 2.0 * e );
   return normalize( vec3( x , y , z ) * divisor );
-
 }
+
+
 
 void main() {
 
     vec2 uv = gl_FragCoord.xy / resolution.xy;
 
+    vec4 positionDefaultInfo = texture2D( textureDefaultPosition, uv );
     vec4 positionInfo = texture2D( texturePosition, uv );
-    vec3 position = mix(vec3(0.0, -200.0, 0.0), positionInfo.xyz, smoothstep(0.0, 0.3, initAnimation));
-    float life = positionInfo.a - dieSpeed;
+    vec3 positionDefault = positionDefaultInfo.xyz;
+    vec3 position = positionInfo.xyz;
+    float life = positionInfo.w - dieSpeed;
 
-    // vec3 followPosition = mix(vec3(0.0, -(1.0 - initAnimation) * 200.0, 0.0), mouse3d, smoothstep(0.2, 0.7, initAnimation));
 
     if(life < 0.0) {
-        // positionInfo = texture2D( textureDefaultPosition, uv );
-        // position = positionInfo.xyz * (1.0 + sin(time * 15.0) * 0.2 + (1.0 - initAnimation)) * 0.4 * radius;
-        // position += followPosition;
-        life = 0.5 + fract(positionInfo.w * 21.4131 + time);
+        life = fract(snoise(position));
+        // position = positionDefault;
     } else {
         // vec3 delta = followPosition - position;
         // position += delta * (0.005 + life * 0.01) * attraction * (1.0 - smoothstep(50.0, 350.0, length(delta))) *speed;
         position += curlNoise(position * curlSize) *speed;
     }
+
+    float dist = length(position);
+    if(dist > 5.) {
+        float f = (dist - 5.) * .005;
+        position -= normalize(position) * f;
+    }
+
 
     gl_FragColor = vec4(position, life);
 

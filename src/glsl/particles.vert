@@ -15,7 +15,7 @@ void main() {
     vColor = positionInfo.xyz;
     vLife = positionInfo.w;
 
-     gl_PointSize = 1500.0 / length( mvPosition.xyz ) * smoothstep(0.0, 0.2, positionInfo.w);
+     gl_PointSize = 1200.0 / length( mvPosition.xyz ) * smoothstep(0.0, 0.2, positionInfo.w);
 
     gl_Position = projectionMatrix * mvPosition;
     

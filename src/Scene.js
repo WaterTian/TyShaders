@@ -59,9 +59,11 @@ class Scene {
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);
 
-		// this.renderer.gammaInput = true;
-		// this.renderer.gammaOutput = true;
-		// this.renderer.shadowMap.enabled = true;
+		this.renderer.gammaInput = true;
+		this.renderer.gammaOutput = true;
+		this.renderer.shadowMap.enabled = true;
+
+		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		// controls
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement);
@@ -85,6 +87,8 @@ class Scene {
 
 		time = Date.now();
 		this.animate();
+
+		window.addEventListener('mousemove', this.onMove);
 	}
 
 	addLights() {
@@ -92,7 +96,18 @@ class Scene {
 		this.scene.add(this.ambient);
 		this.directionalLight = new THREE.DirectionalLight(0x887766);
 		this.directionalLight.position.set(-1, 1, 1).normalize();
+		this.directionalLight.castShadow = true;
 		this.scene.add(this.directionalLight);
+
+		// this.pointLight = new THREE.PointLight(0xffffff, 1, 700);
+		// this.pointLight.castShadow = true;
+		// this.pointLight.shadow.camera.near = 10;
+		// this.pointLight.shadow.camera.far = 700;
+		// this.pointLight.shadow.bias = 0.1;
+		// this.pointLight.shadow.darkness = 0.45;
+		// this.pointLight.shadow.mapSize.width = 4096;
+		// this.pointLight.shadow.mapSize.height = 2048;
+		// this.scene.add(this.pointLight);
 	}
 
 	addObjects() {
@@ -112,13 +127,19 @@ class Scene {
 	}
 
 	initSim() {
-		this.Sim = new Simulation(this.renderer,this.scene,this.camera);
+		this.Sim = new Simulation(this.renderer, this.scene, this.camera);
 
 	}
 
 	initParticles() {
 		this.particles = new Particles();
 		this.scene.add(this.particles);
+	}
+
+	onMove(evt)
+	{
+		this.mouseX=(evt.pageX / window.innerWidth) * 2 - 1;
+		this.mouseY=-(evt.pageY / window.innerHeight) * 2 + 1;
 	}
 
 

@@ -27,13 +27,17 @@ void main() {
     float life = positionInfo.w - dieSpeed;
 
 
+    vec3 followPosition = mix(vec3(0.0, -(1.0 - initAnimation) * 200.0, 0.0), mouse3d, smoothstep(0.2, 0.7, initAnimation));
+
+
     if(life < 0.0) {
-        position = positionDefault;
+        position = positionDefault*0.3;
+        // position += followPosition;
         life = 0.5 + fract(positionInfo.w);
     } else {
         // vec3 delta = followPosition - position;
         // position += delta * (0.005 + life * 0.01) * attraction * (1.0 - smoothstep(50.0, 350.0, length(delta))) *speed;
-        // position += curlNoise4(position * curlSize,time) *speed;
+        // position += curl(position * curlSize, time, 0.1 + (1.0 - life) * 0.1) *speed;
         position += curl(position * curlSize, time, 0.1) *speed;
     }
 

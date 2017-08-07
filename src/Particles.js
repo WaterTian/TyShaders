@@ -50,38 +50,24 @@ class Particles extends THREE.Points {
 				texturePosition: {
 					type: 't',
 					value: texture3
+				},
+				lightPos: {
+					type: 'v3',
+					value: new THREE.Vector3(0, 0, 0)
 				}
 			},
 			vertexShader: glslify('./glsl/particles.vert'),
-			fragmentShader: glslify('./glsl/particles.frag')
-				// blending: THREE.AdditiveBlending,
-				// depthTest: false,
-				// transparent: true
+			fragmentShader: glslify('./glsl/particles.frag'),
+			// blending: THREE.AdditiveBlending,
+			// depthTest: false,
+			// transparent: true
 		});
 
 
 		super(geometry, material);
 
-		// this.customDistanceMaterial = new THREE.ShaderMaterial({
-		// 	uniforms: {
-		// 		lightPos: {
-		// 			type: 'v3',
-		// 			value: new THREE.Vector3(0, 0, 0)
-		// 		},
-		// 		texturePosition: {
-		// 			type: 't',
-		// 			value: null
-		// 		}
-		// 	},
-		// 	vertexShader: glslify('./glsl/particlesDistance.vert'),
-		// 	fragmentShader: glslify('./glsl/particlesDistance.frag'),
-		// 	depthTest: true,
-		// 	depthWrite: true,
-		// 	side: THREE.BackSide,
-		// 	blending: THREE.NoBlending
-		// });
-
-
+		this.castShadow = true;
+		this.receiveShadow = true;
 
 	}
 

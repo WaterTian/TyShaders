@@ -5,14 +5,18 @@ var glslify = require('glslify');
 var undef;
 
 
-const TEXTURE_WIDTH = 512;
-const TEXTURE_HEIGHT = 512;
+const TEXTURE_WIDTH = 256;
+const TEXTURE_HEIGHT = 256;
 const AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 
 class Simulation {
 
 	constructor(_renderer, _scene, _camera) {
+
+
+		this._followPoint = new THREE.Vector3();
+		this._followPointTime = 0;
 
 		this.renderer = _renderer;
 		this.scene = new THREE.Scene();
@@ -183,6 +187,15 @@ class Simulation {
 		this.positionShader.uniforms.curlSize.value = 0.02;
 		this.positionShader.uniforms.attraction.value = 1;
 		this.positionShader.uniforms.initAnimation.value = 1;
+
+
+		this._followPointTime += dt * 0.001;
+		this._followPoint.set(
+			Math.cos(this._followPointTime) * 200,
+			Math.cos(this._followPointTime * 4.0) * 60,
+			Math.sin(this._followPointTime * 2.0) * 200
+		);
+		this.positionShader.uniforms.mouse3d.value.lerp(this._followPoint, 0.2);
 
 
 

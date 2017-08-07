@@ -82,6 +82,8 @@ class Scene {
 		// this.addObjects();
 		this.initSim();
 		this.initParticles();
+
+		time = Date.now();
 		this.animate();
 	}
 
@@ -127,6 +129,7 @@ class Scene {
 		this.render(newTime - time);
 		time = newTime;
 	}
+
 
 	// main animation loop
 	render(dt) {

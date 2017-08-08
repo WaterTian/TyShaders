@@ -11,8 +11,8 @@ texture3.needsUpdate = true;
 
 
 
-const TEXTURE_WIDTH = 512;
-const TEXTURE_HEIGHT = 512;
+const TEXTURE_WIDTH = 256;
+const TEXTURE_HEIGHT = 256;
 const AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 class Particles extends THREE.Points {

@@ -62,7 +62,6 @@ class Scene {
 		this.renderer.gammaInput = true;
 		this.renderer.gammaOutput = true;
 		this.renderer.shadowMap.enabled = true;
-
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
 		// controls
@@ -87,8 +86,6 @@ class Scene {
 
 		time = Date.now();
 		this.animate();
-
-		window.addEventListener('mousemove', this.onMove);
 	}
 
 	addLights() {
@@ -134,12 +131,6 @@ class Scene {
 	initParticles() {
 		this.particles = new Particles();
 		this.scene.add(this.particles);
-	}
-
-	onMove(evt)
-	{
-		this.mouseX=(evt.pageX / window.innerWidth) * 2 - 1;
-		this.mouseY=-(evt.pageY / window.innerHeight) * 2 + 1;
 	}
 
 

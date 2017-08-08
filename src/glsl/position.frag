@@ -27,12 +27,12 @@ void main() {
     float life = positionInfo.w - dieSpeed;
 
 
-    vec3 followPosition = mix(vec3(0.0, -(1.0 - initAnimation) * 200.0, 0.0), mouse3d, smoothstep(0.2, 0.7, initAnimation));
+    vec3 followPosition = mouse3d;
 
 
     if(life < 0.0) {
         position = positionDefault*0.3;
-        // position += followPosition;
+        position += followPosition;
         life = 0.5 + fract(positionInfo.w);
     } else {
         // vec3 delta = followPosition - position;

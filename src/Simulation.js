@@ -5,8 +5,8 @@ var glslify = require('glslify');
 var undef;
 
 
-const TEXTURE_WIDTH = 256;
-const TEXTURE_HEIGHT = 256;
+const TEXTURE_WIDTH = 512;
+const TEXTURE_HEIGHT = 512;
 const AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 
@@ -182,9 +182,9 @@ class Simulation {
 		var deltaRatio = dt / 16.6667;
 
 		this.positionShader.uniforms.speed.value = deltaRatio;
-		this.positionShader.uniforms.dieSpeed.value = 0.01 * deltaRatio;
-		this.positionShader.uniforms.radius.value = 1;
-		this.positionShader.uniforms.curlSize.value = 0.02;
+		this.positionShader.uniforms.dieSpeed.value = 0.005 * deltaRatio;
+		this.positionShader.uniforms.radius.value = 2;
+		this.positionShader.uniforms.curlSize.value = 0.015;
 		this.positionShader.uniforms.attraction.value = 1;
 		this.positionShader.uniforms.initAnimation.value = 1;
 

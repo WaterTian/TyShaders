@@ -4,15 +4,13 @@ var glslify = require('glslify');
 var simulator = require('./Simulation');
 
 
-const texture3 = new THREE.TextureLoader().load('../assets/perlin-512.png');
-texture3.wrapS = THREE.RepeatWrapping;
-texture3.wrapT = THREE.RepeatWrapping;
-texture3.needsUpdate = true;
+const sprite = new THREE.TextureLoader().load('../assets/spark1.png');
 
 
 
-const TEXTURE_WIDTH = 256;
-const TEXTURE_HEIGHT = 256;
+
+const TEXTURE_WIDTH = 512;
+const TEXTURE_HEIGHT = 512;
 const AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 class Particles extends THREE.Points {
@@ -47,9 +45,17 @@ class Particles extends THREE.Points {
 
 		let material = new THREE.ShaderMaterial({
 			uniforms: {
+				color1: {
+					type: 'c',
+					value: _color1
+				},
+				color2: {
+					type: 'c',
+					value: _color2
+				},
 				texturePosition: {
 					type: 't',
-					value: texture3
+					value: null
 				},
 				lightPos: {
 					type: 'v3',

@@ -3,7 +3,11 @@ uniform sampler2D texturePosition;
 varying vec3 vColor;
 varying float vLife;
 
+varying vec2 vUv;
+
 void main() {
+
+	vUv = uv;
 
 	
     vec4 positionInfo = texture2D( texturePosition, position.xy );
@@ -15,9 +19,8 @@ void main() {
     vColor = positionInfo.xyz;
     vLife = positionInfo.w;
 
-     gl_PointSize = 1200.0 / length( mvPosition.xyz ) * smoothstep(0.0, 0.2, positionInfo.w);
+    gl_PointSize = 2000.0 / length( mvPosition.xyz ) * smoothstep(0.0, 0.3, positionInfo.w);
 
     gl_Position = projectionMatrix * mvPosition;
     
-
 }

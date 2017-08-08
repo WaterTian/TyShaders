@@ -81,6 +81,7 @@ class Scene {
 
 		this.addLights();
 		// this.addObjects();
+		this.initGround();
 		this.initSim();
 		this.initParticles();
 
@@ -91,10 +92,24 @@ class Scene {
 	addLights() {
 		this.ambient = new THREE.AmbientLight(0x333333);
 		this.scene.add(this.ambient);
-		this.directionalLight = new THREE.DirectionalLight(0x887766);
-		this.directionalLight.position.set(-1, 1, 1).normalize();
+
+		this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+		this.directionalLight.color.setHSL(0.1, 1, 0.95);
+		this.directionalLight.position.set(-1, 1.75, 1);
+		this.directionalLight.position.multiplyScalar(30);
 		this.directionalLight.castShadow = true;
+		this.directionalLight.shadow.mapSize.width = 2048;
+		this.directionalLight.shadow.mapSize.height = 2048;
 		this.scene.add(this.directionalLight);
+		var d = 400;
+		this.directionalLight.shadow.camera.left = -d;
+		this.directionalLight.shadow.camera.right = d;
+		this.directionalLight.shadow.camera.top = d;
+		this.directionalLight.shadow.camera.bottom = -d;
+		this.directionalLight.shadow.camera.far = 3500;
+		this.directionalLight.shadow.bias = -0.0001;
+
+
 
 		// this.pointLight = new THREE.PointLight(0xffffff, 1, 700);
 		// this.pointLight.castShadow = true;
@@ -112,6 +127,7 @@ class Scene {
 		for (var i = 0; i < 100; i++) {
 			var material = new THREE.MeshPhongMaterial({
 				color: 0xffffff * Math.random(),
+				 dithering: true,
 				shading: THREE.FlatShading
 			});
 			var mesh = new THREE.Mesh(geometry, material);
@@ -120,7 +136,28 @@ class Scene {
 			mesh.rotation.set(Math.random() * 2, Math.random() * 2, Math.random() * 2);
 			mesh.scale.x = mesh.scale.y = mesh.scale.z = Math.random() * 20;
 			this.scene.add(mesh);
+
+			mesh.castShadow = true;
+			mesh.receiveShadow = true;
 		}
+
+
+
+	}
+
+	initGround()
+	{
+		// GROUND
+		var groundGeo = new THREE.PlaneBufferGeometry(10000, 10000);
+		var groundMat = new THREE.MeshPhongMaterial({
+			color: 0xffffff,
+			specular: 0x050505
+		});
+		var ground = new THREE.Mesh(groundGeo, groundMat);
+		ground.rotation.x = -Math.PI / 2;
+		ground.position.y = -200;
+		this.scene.add(ground);
+		ground.receiveShadow = true;
 	}
 
 	initSim() {

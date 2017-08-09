@@ -177,9 +177,11 @@ class Simulation {
 
 	update(dt) {
 
-		this.renderer.autoClearColor = false;
+  //       let autoClearColor = this.renderer.autoClearColor;
+  //       let clearColor = this.renderer.getClearColor();
+		// this.renderer.autoClearColor = false;
 
-		var deltaRatio = dt / 16.6667;
+		let deltaRatio = dt / 16.6667;
 
 		this.positionShader.uniforms.speed.value = deltaRatio;
 		this.positionShader.uniforms.dieSpeed.value = 0.005 * deltaRatio;
@@ -201,8 +203,8 @@ class Simulation {
 
 		this.updatePosition(dt);
 
-		// this.renderer.setClearColor(clearColor, clearAlpha);
-		// this.renderer.autoClearColor = true;
+		// this.renderer.setClearColor(clearColor);
+		// this.renderer.autoClearColor = autoClearColor;
 
 	}
 

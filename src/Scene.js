@@ -52,7 +52,8 @@ class Scene {
 
 		// init renderer
 		this.renderer = new THREE.WebGLRenderer({
-			antialias: true
+			antialias: true,
+			autoClearColor:true
 		});
 		this.renderer.setClearColor(new THREE.Color(0xaaaaaa));
 		this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -69,18 +70,13 @@ class Scene {
 		this.controls.update();
 
 
-
 		// // postprocessing
-		// this.composer = new THREE.EffectComposer(this.renderer);
-		// this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
-		// let effect = new THREE.ShaderPass(THREE.ScreenShader);
-		// effect.renderToScreen = true;
-		// this.composer.addPass(effect);
+		// this.initEffectComposer();
 
 
 
 		this.addLights();
-		// this.addObjects();
+		this.addObjects();
 		this.initGround();
 		this.initSim();
 		this.initParticles();
@@ -88,6 +84,18 @@ class Scene {
 		time = Date.now();
 		this.animate();
 	}
+
+
+	initEffectComposer()
+	{
+		this.composer = new THREE.EffectComposer(this.renderer);
+		this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
+		let effect = new THREE.ShaderPass(THREE.ScreenShader);
+		effect.renderToScreen = true;
+		this.composer.addPass(effect);
+	}
+
+
 
 	addLights() {
 		this.ambient = new THREE.AmbientLight(0x333333);
@@ -185,7 +193,7 @@ class Scene {
 		if (this.stats) this.stats.update();
 
 
-		this.particles.update(this.Sim.positionRenderTarget);
+		if(this.particles)this.particles.update(this.Sim.positionRenderTarget);
 		this.Sim.update(dt);
 
 

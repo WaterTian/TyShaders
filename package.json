@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "start": "budo src/main.js:dist/app.js --live",
+    "dev": "budo src/main.js:dist/app.js --live",
     "build": "browserify src/main.js | uglifyjs -cm > dist/app.js"
   },
   "browserify": {

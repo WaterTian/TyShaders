@@ -31,15 +31,20 @@ void main() {
 
 
     if(life < 0.0) {
-        position = positionDefault*0.3;
+        position = positionDefault * radius;
         position += followPosition;
         life = 0.5 + fract(positionInfo.w);
     } else {
         // vec3 delta = followPosition - position;
         // position += delta * (0.005 + life * 0.01) * attraction * (1.0 - smoothstep(50.0, 350.0, length(delta))) *speed;
+
         // position += curl(position * curlSize, time, 0.1 + (1.0 - life) * 0.1) *speed;
+
         position += curl(position * curlSize, time, 0.1) *speed;
     }
+
+    position.xy *= 1.01;
+    // position.z += 2.;
 
 
     gl_FragColor = vec4(position, life);

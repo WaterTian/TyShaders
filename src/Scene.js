@@ -26,8 +26,8 @@ import Particles from './Particles';
 import Simulation from './Simulation';
 
 
-var time = 0;
 
+var time = 0;
 
 class Scene {
 
@@ -45,7 +45,7 @@ class Scene {
 		this.scene;
 
 		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
-		this.camera.position.set(0, 0, 1000);
+		this.camera.position.set(0, 0, 500);
 		this.scene = new THREE.Scene();
 		this.scene.add(this.camera);
 
@@ -55,7 +55,7 @@ class Scene {
 			antialias: true,
 			autoClearColor:true
 		});
-		this.renderer.setClearColor(new THREE.Color(0xaaaaaa));
+		this.renderer.setClearColor(new THREE.Color(0xcccccc));
 		this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);
@@ -76,9 +76,11 @@ class Scene {
 
 
 		this.addLights();
-		this.addObjects();
-		this.initGround();
+		// this.addObjects();
+		// this.initGround();
 		this.initSim();
+
+		this.particlesArr=[];
 		this.initParticles();
 
 		time = Date.now();
@@ -169,15 +171,19 @@ class Scene {
 	}
 
 	initSim() {
-		this.Sim = new Simulation(this.renderer, this.scene, this.camera);
+		this.Sim = new Simulation(this.renderer);
 
 	}
 
 	initParticles() {
-		this.particles = new Particles();
-		this.scene.add(this.particles);
+		for (var i = 0; i < 1; i++) {
+			var particles = new Particles(512,0xe6005e,0x00b1d7);
+			// var particles = new Particles(256);
+			// particles.position.set(Math.random()*200-100,Math.random()*200-100,-0)
+			this.scene.add(particles);
+			this.particlesArr.push(particles);
+		}
 	}
-
 
 
 	animate() {
@@ -193,8 +199,12 @@ class Scene {
 		if (this.stats) this.stats.update();
 
 
-		if(this.particles)this.particles.update(this.Sim.positionRenderTarget);
 		this.Sim.update(dt);
+		for (var i = 0; i < this.particlesArr.length; i++) {
+			this.particlesArr[i].update(this.Sim.positionRenderTarget);
+		}
+
+
 
 
 		this.renderer.render(this.scene, this.camera);

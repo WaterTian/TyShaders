@@ -4,23 +4,14 @@ var glslify = require('glslify');
 var simulator = require('./Simulation');
 
 
-const sprite = new THREE.TextureLoader().load('../assets/spark1.png');
-
-
-
-
-const TEXTURE_WIDTH = 512;
-const TEXTURE_HEIGHT = 512;
-const AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 class Particles extends THREE.Points {
 
-	constructor() {
+	constructor(SIZE = 64, C1 = 0xffffff, C2 = 0xaaaaaa) {
+		const AMOUNT = SIZE * SIZE;
+		const COLOR1 = new THREE.Color(C1);
+		const COLOR2 = new THREE.Color(C2);
 
-
-
-		const _color1 = new THREE.Color('#e6005e');
-		const _color2 = new THREE.Color('#00b1d7');
 
 		let position = new Float32Array(AMOUNT * 3);
 		let sizes = new Float32Array(AMOUNT);
@@ -43,34 +34,61 @@ class Particles extends THREE.Points {
 		let geometry = new THREE.BufferGeometry();
 		geometry.addAttribute('position', new THREE.BufferAttribute(position, 3));
 
+
+
+		let sprite = new THREE.TextureLoader().load('../assets/sprites/circle2.png');
+		sprite.wrapS = THREE.RepeatWrapping;
+		sprite.wrapT = THREE.RepeatWrapping;
+
 		let material = new THREE.ShaderMaterial({
 			uniforms: {
 				color1: {
 					type: 'c',
-					value: _color1
+					value: COLOR1
 				},
 				color2: {
 					type: 'c',
-					value: _color2
+					value: COLOR2
 				},
 				texturePosition: {
 					type: 't',
 					value: null
 				},
-				lightPos: {
-					type: 'v3',
-					value: new THREE.Vector3(0, 0, 0)
+				textureSprite: {
+					type: 't',
+					value: sprite
 				}
 			},
 			vertexShader: glslify('./glsl/particles.vert'),
 			fragmentShader: glslify('./glsl/particles.frag'),
 			// blending: THREE.AdditiveBlending,
 			// depthTest: false,
-			// transparent: true
+			transparent: true
 		});
 
 
 		super(geometry, material);
+
+		// this.customDistanceMaterial = new THREE.ShaderMaterial({
+		// 	uniforms: {
+		// 		lightPos: {
+		// 			type: 'v3',
+		// 			value: new THREE.Vector3(0, 0, 0)
+		// 		},
+		// 		texturePosition: {
+		// 			type: 't',
+		// 			value: null
+		// 		}
+		// 	},
+		// 	vertexShader: glslify('./glsl/particlesDistance.vert'),
+		// 	fragmentShader: glslify('./glsl/particlesDistance.frag'),
+		// 	depthTest: true,
+		// 	depthWrite: true,
+		// 	side: THREE.BackSide,
+		// 	blending: THREE.NoBlending
+		// });
+
+
 
 		this.castShadow = true;
 		this.receiveShadow = true;
@@ -80,6 +98,7 @@ class Particles extends THREE.Points {
 	update(_texture) {
 
 		this.material.uniforms.texturePosition.value = _texture;
+		// this.customDistanceMaterial.uniforms.texturePosition.value = _texture;
 		// this.material.uniforms.texturePosition.value = simulator.positionRenderTarget;
 		// this.customDistanceMaterial.uniforms.texturePosition.value = texture3;
 		// this.customDistanceMaterial.uniforms.texturePosition.value = simulator.positionRenderTarget;

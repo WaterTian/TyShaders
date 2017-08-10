@@ -12,7 +12,7 @@ const AMOUNT = TEXTURE_WIDTH * TEXTURE_HEIGHT;
 
 class Simulation {
 
-	constructor(_renderer, _scene, _camera) {
+	constructor(_renderer) {
 
 
 		this._followPoint = new THREE.Vector3();
@@ -21,9 +21,6 @@ class Simulation {
 		this.renderer = _renderer;
 		this.scene = new THREE.Scene();
 		this.camera = new THREE.Camera();
-
-		// this.scene = _scene;
-		// this.camera = _camera;
 		this.camera.position.z = 1;
 
 		var rawShaderPrefix = 'precision ' + this.renderer.capabilities.precision + ' float;\n';
@@ -183,21 +180,21 @@ class Simulation {
 
 		let deltaRatio = dt / 16.6667;
 
-		this.positionShader.uniforms.speed.value = deltaRatio;
-		this.positionShader.uniforms.dieSpeed.value = 0.005 * deltaRatio;
-		this.positionShader.uniforms.radius.value = 2;
-		this.positionShader.uniforms.curlSize.value = 0.015;
+		this.positionShader.uniforms.speed.value = 1.*deltaRatio;
+		this.positionShader.uniforms.dieSpeed.value = 0.004 * deltaRatio;
+		this.positionShader.uniforms.radius.value = 0.3;
+		this.positionShader.uniforms.curlSize.value = 0.02;
 		this.positionShader.uniforms.attraction.value = 1;
 		this.positionShader.uniforms.initAnimation.value = 1;
 
 
-		this._followPointTime += dt * 0.001;
+		this._followPointTime += dt * 0.0005;
 		this._followPoint.set(
-			Math.cos(this._followPointTime) * 200,
-			Math.cos(this._followPointTime * 4.0) * 60,
-			Math.sin(this._followPointTime * 2.0) * 200
+			Math.cos(this._followPointTime) * 50,
+			Math.cos(this._followPointTime * 2.0) * 50,
+			Math.sin(this._followPointTime * 3.0) * 10
 		);
-		this.positionShader.uniforms.mouse3d.value.lerp(this._followPoint, 0.2);
+		// this.positionShader.uniforms.mouse3d.value.lerp(this._followPoint, 0.1);
 
 
 

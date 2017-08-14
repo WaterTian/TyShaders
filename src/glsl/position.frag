@@ -43,8 +43,8 @@ void main() {
         position += curl(position * curlSize, time, 0.1) *speed;
     }
 
-    position.xy *= 1.01;
-    // position.z += 2.;
+    // position.xy *= 1.01;
+    position.z += 2.;
 
 
     gl_FragColor = vec4(position, life);

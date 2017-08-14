@@ -100,6 +100,7 @@ class Simulation {
 		this.scene.add(this.mesh);
 
 
+		let floatType = this.isMobileDevice() ? THREE.HalfFloatType : THREE.FloatType;
 
 		this.positionRenderTarget = new THREE.WebGLRenderTarget(TEXTURE_WIDTH, TEXTURE_HEIGHT, {
 			wrapS: THREE.RepeatWrapping,
@@ -107,7 +108,7 @@ class Simulation {
 			minFilter: THREE.NearestFilter,
 			magFilter: THREE.NearestFilter,
 			format: THREE.RGBAFormat,
-			type: THREE.FloatType,
+			type: floatType,
 			depthWrite: false,
 			depthBuffer: false,
 			stencilBuffer: false
@@ -117,6 +118,11 @@ class Simulation {
 
 		console.log("1");
 
+	}
+
+	isMobileDevice() {
+		var e = navigator.userAgent.toLowerCase();
+		return !!/(iphone|ios|android|mini|mobile|mobi|nokia|symbian|ipod|ipad|ws\s+phone|mqqbrowser|wp7|wp8|ucbrowser7|ucweb|360\s+aphone\s+browser)/i.test(e)
 	}
 
 	copyTexture(input, output) {
@@ -174,13 +180,13 @@ class Simulation {
 
 	update(dt) {
 
-  //       let autoClearColor = this.renderer.autoClearColor;
-  //       let clearColor = this.renderer.getClearColor();
+		//       let autoClearColor = this.renderer.autoClearColor;
+		//       let clearColor = this.renderer.getClearColor();
 		// this.renderer.autoClearColor = false;
 
 		let deltaRatio = dt / 16.6667;
 
-		this.positionShader.uniforms.speed.value = 1.*deltaRatio;
+		this.positionShader.uniforms.speed.value = 1. * deltaRatio;
 		this.positionShader.uniforms.dieSpeed.value = 0.004 * deltaRatio;
 		this.positionShader.uniforms.radius.value = 0.3;
 		this.positionShader.uniforms.curlSize.value = 0.02;

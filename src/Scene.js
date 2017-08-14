@@ -56,7 +56,7 @@ class Scene {
 			autoClearColor:true
 		});
 		this.renderer.setClearColor(new THREE.Color(0xcccccc));
-		this.renderer.setPixelRatio(window.devicePixelRatio);
+		// this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);
 

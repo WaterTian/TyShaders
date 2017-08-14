@@ -171,7 +171,7 @@ class Simulation {
 
 		this.mesh.material = this.positionShader;
 		this.positionShader.uniforms.textureDefaultPosition.value = this.textureDefaultPosition;
-		this.positionShader.uniforms.texturePosition.value = this.positionRenderTarget2;
+		this.positionShader.uniforms.texturePosition.value = this.positionRenderTarget2.texture;
 		this.positionShader.uniforms.time.value += dt * 0.001;
 
 		this.renderer.render(this.scene, this.camera, this.positionRenderTarget, true);

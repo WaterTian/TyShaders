@@ -5,7 +5,6 @@ uniform sampler2D textureSprite;
 
 
 varying float vLife;
-varying vec2 vUv;
 
 void main() {
 

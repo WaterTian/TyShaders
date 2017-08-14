@@ -201,7 +201,7 @@ class Scene {
 
 		this.Sim.update(dt);
 		for (var i = 0; i < this.particlesArr.length; i++) {
-			this.particlesArr[i].update(this.Sim.positionRenderTarget);
+			this.particlesArr[i].update(this.Sim.positionRenderTarget.texture);
 		}
 
 

@@ -2,11 +2,8 @@ uniform sampler2D texturePosition;
 
 
 varying float vLife;
-varying vec2 vUv;
 
 void main() {
-
-	vUv = uv;
 
     vec4 positionInfo = texture2D( texturePosition, position.xy );
 

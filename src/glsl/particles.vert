@@ -1,6 +1,4 @@
 uniform sampler2D texturePosition;
-
-
 varying float vLife;
 
 void main() {

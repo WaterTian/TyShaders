@@ -44,7 +44,7 @@ void main() {
     }
 
     // position.xy *= 1.01;
-    position.z += 2.;
+    // position.z += 2.;
 
 
     gl_FragColor = vec4(position, life);

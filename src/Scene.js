@@ -26,6 +26,7 @@ import Particles from './Particles';
 import Simulation from './Simulation';
 
 
+var shadowBuffer, shadowBufferSize, shadowCamera, shadowDebug
 
 var time = 0;
 
@@ -53,9 +54,9 @@ class Scene {
 		// init renderer
 		this.renderer = new THREE.WebGLRenderer({
 			antialias: true,
-			autoClearColor:true
+			autoClearColor: true
 		});
-		this.renderer.setClearColor(new THREE.Color(0xcccccc));
+		this.renderer.setClearColor(0xcccccc);
 		// this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);
@@ -80,7 +81,6 @@ class Scene {
 		// this.initGround();
 		this.initSim();
 
-		this.particlesArr=[];
 		this.initParticles();
 
 		time = Date.now();
@@ -88,8 +88,7 @@ class Scene {
 	}
 
 
-	initEffectComposer()
-	{
+	initEffectComposer() {
 		this.composer = new THREE.EffectComposer(this.renderer);
 		this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
 		let effect = new THREE.ShaderPass(THREE.ScreenShader);
@@ -137,7 +136,7 @@ class Scene {
 		for (var i = 0; i < 100; i++) {
 			var material = new THREE.MeshPhongMaterial({
 				color: 0xffffff * Math.random(),
-				 dithering: true,
+				dithering: true,
 				shading: THREE.FlatShading
 			});
 			var mesh = new THREE.Mesh(geometry, material);
@@ -155,8 +154,7 @@ class Scene {
 
 	}
 
-	initGround()
-	{
+	initGround() {
 		// GROUND
 		var groundGeo = new THREE.PlaneBufferGeometry(10000, 10000);
 		var groundMat = new THREE.MeshPhongMaterial({
@@ -176,13 +174,48 @@ class Scene {
 	}
 
 	initParticles() {
-		for (var i = 0; i < 1; i++) {
-			var particles = new Particles(512,0xe6005e,0x00b1d7);
-			// var particles = new Particles(256);
-			// particles.position.set(Math.random()*200-100,Math.random()*200-100,-0)
-			this.scene.add(particles);
-			this.particlesArr.push(particles);
-		}
+		this.particles = new Particles(512, 0xe6005e, 0x00b1d7);
+		this.scene.add(this.particles);
+
+
+		var s = 150;
+		shadowCamera = new THREE.OrthographicCamera(-s, s, s, -s, .1, 400);
+		shadowCamera.position.set(10, 4, 200);
+		shadowCamera.lookAt(this.scene.position);
+		var b = new THREE.CameraHelper(shadowCamera);
+		this.scene.add(b);
+
+
+		shadowBufferSize = 2048;
+		shadowBuffer = new THREE.WebGLRenderTarget(shadowBufferSize, shadowBufferSize, {
+			wrapS: THREE.ClampToEdgeWrapping,
+			wrapT: THREE.ClampToEdgeWrapping,
+			minFilter: THREE.LinearMipMapLinear,
+			magFilter: THREE.LinearFilter,
+			format: THREE.RGBAFormat
+		});
+
+		this.shadowMaterial = new THREE.ShaderMaterial({
+			uniforms: {
+				texturePosition: {
+					type: 't',
+					value: null
+				}
+			},
+			vertexShader: glslify('./glsl/particles.vert'),
+			fragmentShader: glslify('./glsl/particlesShadow.frag'),
+			side: THREE.DoubleSide
+		});
+
+
+		shadowDebug = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshBasicMaterial({
+			map: shadowBuffer,
+			side: THREE.DoubleSide
+		}));
+		shadowDebug.position.set(0, 0, -200);
+		this.scene.add( shadowDebug ); 
+
+
 	}
 
 
@@ -200,13 +233,17 @@ class Scene {
 
 
 		this.Sim.update(dt);
-		for (var i = 0; i < this.particlesArr.length; i++) {
-			this.particlesArr[i].update(this.Sim.positionRenderTarget.texture);
-		}
+		this.particles.update(this.Sim.positionRenderTarget.texture,shadowBuffer.texture);
+
+		this.shadowMaterial.uniforms.texturePosition.value = this.Sim.positionRenderTarget.texture;
 
 
+		this.renderer.setClearColor(0);
+		this.particles.material = this.shadowMaterial;
+		this.renderer.render(this.scene, shadowCamera, shadowBuffer);
 
-
+        this.renderer.setClearColor(0xcccccc);
+        this.particles.material = this.particles.particlesMaterial;
 		this.renderer.render(this.scene, this.camera);
 		if (this.composer) this.composer.render();
 	}

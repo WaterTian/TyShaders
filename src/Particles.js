@@ -5,6 +5,7 @@ var simulator = require('./Simulation');
 
 
 
+
 class Particles extends THREE.Points {
 
 	constructor(SIZE = 64, C1 = 0xffffff, C2 = 0xaaaaaa) {
@@ -57,6 +58,10 @@ class Particles extends THREE.Points {
 				textureSprite: {
 					type: 't',
 					value: sprite
+				},
+				depthTexture: {
+					type: 't',
+					value: null
 				}
 			},
 			vertexShader: glslify('./glsl/particles.vert'),
@@ -67,37 +72,21 @@ class Particles extends THREE.Points {
 		});
 
 
+
 		super(geometry, material);
-
-		// this.customDistanceMaterial = new THREE.ShaderMaterial({
-		// 	uniforms: {
-		// 		lightPos: {
-		// 			type: 'v3',
-		// 			value: new THREE.Vector3(0, 0, 0)
-		// 		},
-		// 		texturePosition: {
-		// 			type: 't',
-		// 			value: null
-		// 		}
-		// 	},
-		// 	vertexShader: glslify('./glsl/particlesDistance.vert'),
-		// 	fragmentShader: glslify('./glsl/particlesDistance.frag'),
-		// 	depthTest: true,
-		// 	depthWrite: true,
-		// 	side: THREE.BackSide,
-		// 	blending: THREE.NoBlending
-		// });
-
-
 
 		this.castShadow = true;
 		this.receiveShadow = true;
+		this.particlesMaterial = material;
+
 
 	}
 
-	update(_texture) {
+	update(_texture,_depthTexture) {
 
 		this.material.uniforms.texturePosition.value = _texture;
+		this.material.uniforms.depthTexture.value = _depthTexture;
+
 		// this.customDistanceMaterial.uniforms.texturePosition.value = _texture;
 		// this.material.uniforms.texturePosition.value = simulator.positionRenderTarget;
 		// this.customDistanceMaterial.uniforms.texturePosition.value = texture3;

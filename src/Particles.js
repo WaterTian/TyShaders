@@ -62,6 +62,10 @@ class Particles extends THREE.Points {
 				depthTexture: {
 					type: 't',
 					value: null
+				},
+				lightPosition: {
+					type: 'v3',
+					value: new THREE.Vector3
 				}
 			},
 			vertexShader: glslify('./glsl/particles.vert'),

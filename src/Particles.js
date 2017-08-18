@@ -58,14 +58,6 @@ class Particles extends THREE.Points {
 				textureSprite: {
 					type: 't',
 					value: sprite
-				},
-				depthTexture: {
-					type: 't',
-					value: null
-				},
-				lightPosition: {
-					type: 'v3',
-					value: new THREE.Vector3
 				}
 			},
 			vertexShader: glslify('./glsl/particles.vert'),
@@ -86,10 +78,9 @@ class Particles extends THREE.Points {
 
 	}
 
-	update(_texture,_depthTexture) {
+	update(_texture) {
 
-		this.material.uniforms.texturePosition.value = _texture;
-		this.material.uniforms.depthTexture.value = _depthTexture;
+		this.particlesMaterial.uniforms.texturePosition.value = _texture;
 
 		// this.customDistanceMaterial.uniforms.texturePosition.value = _texture;
 		// this.material.uniforms.texturePosition.value = simulator.positionRenderTarget;

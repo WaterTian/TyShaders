@@ -26,8 +26,6 @@ import Particles from './Particles';
 import Simulation from './Simulation';
 
 
-var shadowBuffer, shadowBufferSize, shadowCamera, shadowDebug
-
 var time = 0;
 
 class Scene {
@@ -176,46 +174,6 @@ class Scene {
 	initParticles() {
 		this.particles = new Particles(512, 0xe6005e, 0x00b1d7);
 		this.scene.add(this.particles);
-
-
-		var s = 150;
-		shadowCamera = new THREE.OrthographicCamera(-s, s, s, -s, .1, 400);
-		shadowCamera.position.set(10, 4, 200);
-		shadowCamera.lookAt(this.scene.position);
-		var b = new THREE.CameraHelper(shadowCamera);
-		this.scene.add(b);
-
-
-		shadowBufferSize = 2048;
-		shadowBuffer = new THREE.WebGLRenderTarget(shadowBufferSize, shadowBufferSize, {
-			wrapS: THREE.ClampToEdgeWrapping,
-			wrapT: THREE.ClampToEdgeWrapping,
-			minFilter: THREE.LinearMipMapLinear,
-			magFilter: THREE.LinearFilter,
-			format: THREE.RGBAFormat
-		});
-
-		this.shadowMaterial = new THREE.ShaderMaterial({
-			uniforms: {
-				texturePosition: {
-					type: 't',
-					value: null
-				}
-			},
-			vertexShader: glslify('./glsl/particles.vert'),
-			fragmentShader: glslify('./glsl/particlesShadow.frag'),
-			side: THREE.DoubleSide
-		});
-
-
-		shadowDebug = new THREE.Mesh(new THREE.PlaneGeometry(200, 200), new THREE.MeshBasicMaterial({
-			map: shadowBuffer,
-			side: THREE.DoubleSide
-		}));
-		shadowDebug.position.set(0, 0, -200);
-		this.scene.add( shadowDebug ); 
-
-
 	}
 
 
@@ -233,17 +191,8 @@ class Scene {
 
 
 		this.Sim.update(dt);
-		this.particles.update(this.Sim.positionRenderTarget.texture,shadowBuffer.texture);
+		this.particles.update(this.Sim.positionRenderTarget.texture);
 
-		this.shadowMaterial.uniforms.texturePosition.value = this.Sim.positionRenderTarget.texture;
-
-
-		this.renderer.setClearColor(0);
-		this.particles.material = this.shadowMaterial;
-		this.renderer.render(this.scene, shadowCamera, shadowBuffer);
-
-        this.renderer.setClearColor(0xcccccc);
-        this.particles.material = this.particles.particlesMaterial;
 		this.renderer.render(this.scene, this.camera);
 		if (this.composer) this.composer.render();
 	}

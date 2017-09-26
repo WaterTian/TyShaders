@@ -37,7 +37,7 @@ class Particles extends THREE.Points {
 
 
 
-		let sprite = new THREE.TextureLoader().load('../assets/sprites/circle2.png');
+		let sprite = new THREE.TextureLoader().load('../assets/sprites/sprite.png');
 		sprite.wrapS = THREE.RepeatWrapping;
 		sprite.wrapT = THREE.RepeatWrapping;
 

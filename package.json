@@ -12,7 +12,6 @@
       "glslify"
     ]
   },
-
   "author": "WaterTian <changewater@qq.com>",
   "dependencies": {
     "gsap": "^1.20.2",
@@ -20,7 +19,6 @@
     "three": "^0.86.0",
     "three-orbit-controls": "^82.1.0"
   },
-  
   "devDependencies": {
     "babel-preset-es2015": "^6.24.1",
     "babelify": "^7.3.0",

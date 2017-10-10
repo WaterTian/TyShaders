@@ -5,7 +5,6 @@ var simulator = require('./Simulation');
 
 
 
-
 class Particles extends THREE.Points {
 
 	constructor(SIZE = 64, C1 = 0xffffff, C2 = 0xaaaaaa) {
@@ -37,9 +36,26 @@ class Particles extends THREE.Points {
 
 
 
-		let sprite = new THREE.TextureLoader().load('../assets/sprites/sprite.png');
-		sprite.wrapS = THREE.RepeatWrapping;
-		sprite.wrapT = THREE.RepeatWrapping;
+		var spriteNumData = new Uint8Array(SIZE * SIZE * 4);
+
+		for (var j = 0; j < SIZE * SIZE * 4; j+=4) {
+			spriteNumData[j] = Math.random() * 0.13 * 255;
+		}
+
+		var spriteNumTexture = new THREE.DataTexture(spriteNumData, SIZE, SIZE, THREE.RGBAFormat);
+		spriteNumTexture.minFilter = THREE.NearestFilter;
+		spriteNumTexture.magFilter = THREE.NearestFilter;
+		spriteNumTexture.needsUpdate = true;
+
+
+		var spriteArr = [];
+		for (var i = 0; i < 13; i++) {
+			var j = i + 1;
+			spriteArr[i] = new THREE.TextureLoader().load('../assets/sprites/p' + j + '.png');
+			spriteArr[i].wrapS = THREE.RepeatWrapping;
+			spriteArr[i].wrapT = THREE.RepeatWrapping;
+		}
+
 
 		let material = new THREE.ShaderMaterial({
 			uniforms: {
@@ -55,9 +71,13 @@ class Particles extends THREE.Points {
 					type: 't',
 					value: null
 				},
-				textureSprite: {
+				textureSpriteNum: {
 					type: 't',
-					value: sprite
+					value: spriteNumTexture
+				},
+				textureSpriteArr: {
+					type: 't',
+					value: spriteArr
 				}
 			},
 			vertexShader: glslify('./glsl/particles.vert'),

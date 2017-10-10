@@ -186,10 +186,10 @@ class Simulation {
 
 		let deltaRatio = dt / 16.6667;
 
-		this.positionShader.uniforms.speed.value = 1. * deltaRatio;
-		this.positionShader.uniforms.dieSpeed.value = 0.004 * deltaRatio;
+		this.positionShader.uniforms.speed.value = 1 * deltaRatio;
+		this.positionShader.uniforms.dieSpeed.value = 0.002 * deltaRatio;
 		this.positionShader.uniforms.radius.value = 0.3;
-		this.positionShader.uniforms.curlSize.value = 0.02;
+		this.positionShader.uniforms.curlSize.value = 0.01;
 		this.positionShader.uniforms.attraction.value = 1;
 		this.positionShader.uniforms.initAnimation.value = 1;
 

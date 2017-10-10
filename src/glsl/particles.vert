@@ -1,6 +1,12 @@
 
 uniform sampler2D texturePosition;
+
+uniform sampler2D textureSpriteNum;
+
+
 varying float vLife;
+varying float vNum;
+
 
 
 void main() {
@@ -11,9 +17,11 @@ void main() {
     vec4 mvPosition = viewMatrix * worldPosition;
 
     vLife = positionInfo.w;
+    vNum = texture2D( textureSpriteNum, position.xy ).r;
+
 
     // gl_PointSize = 2000.0 / length( mvPosition.xyz ) * smoothstep(0.0, 0.3, positionInfo.w);
-    gl_PointSize = 2000.0 / length( mvPosition.xyz ) * smoothstep(0.0, 0.1, positionInfo.w);
+    gl_PointSize = 10000.0 / length( mvPosition.xyz ) * smoothstep(0.0, 0.1, positionInfo.w);
 
     gl_Position = projectionMatrix * mvPosition;
     

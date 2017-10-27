@@ -75,7 +75,6 @@ class Scene {
 		this.addLights();
 		this.addObjects();
 		this.initGround();
-		this.initSim();
 
 
 		time = Date.now();

@@ -1,5 +1,5 @@
 # shaders
-## first shader project
+## ty shaders
 
 
 

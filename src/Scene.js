@@ -22,8 +22,6 @@ import './postprocessing/ScreenShader';
 // require('./postprocessing/CopyShader');
 // require('./postprocessing/ScreenShader');
 
-import Particles from './Particles';
-import Simulation from './Simulation';
 
 
 var time = 0;
@@ -70,16 +68,15 @@ class Scene {
 
 
 		// // postprocessing
-		// this.initEffectComposer();
+		this.initEffectComposer();
 
 
 
 		this.addLights();
-		// this.addObjects();
-		// this.initGround();
+		this.addObjects();
+		this.initGround();
 		this.initSim();
 
-		this.initParticles();
 
 		time = Date.now();
 		this.animate();
@@ -166,15 +163,6 @@ class Scene {
 		ground.receiveShadow = true;
 	}
 
-	initSim() {
-		this.Sim = new Simulation(this.renderer);
-
-	}
-
-	initParticles() {
-		this.particles = new Particles(512, 0xe6005e, 0x00b1d7);
-		this.scene.add(this.particles);
-	}
 
 
 	animate() {
@@ -188,10 +176,6 @@ class Scene {
 	// main animation loop
 	render(dt) {
 		if (this.stats) this.stats.update();
-
-
-		this.Sim.update(dt);
-		this.particles.update(this.Sim.positionRenderTarget.texture);
 
 		this.renderer.render(this.scene, this.camera);
 		if (this.composer) this.composer.render();

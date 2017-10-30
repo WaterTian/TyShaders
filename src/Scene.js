@@ -43,6 +43,7 @@ class Scene {
 
 		this.camera;
 		this.scene;
+		this.groundMaterial;
 
 		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
 		this.camera.position.set(0, 0, 500);
@@ -77,7 +78,7 @@ class Scene {
 
 
 		this.addLights();
-		this.addObjects();
+		// this.addObjects();
 		this.initGround();
 		this.loadModel();
 
@@ -176,30 +177,72 @@ class Scene {
 			});
 
 			var mesh = new THREE.Mesh(geometry, material);
-			mesh.scale.set(20,20,20);
-			mesh.position.set(0, -300,0);
+			mesh.scale.set(20, 20, 20);
+			mesh.position.set(0, -300, 0);
 			That.scene.add(mesh);
-			
+
 			mesh.castShadow = true;
 			mesh.receiveShadow = true;
 		});
 	}
 
 	initGround() {
-		// GROUND
-		var groundGeo = new THREE.PlaneBufferGeometry(10000, 10000);
-		var groundMat = new THREE.MeshPhongMaterial({
-			color: 0xffffff,
-			specular: 0x050505
+
+		var _w = 1024;
+		var _h = 1024;
+
+		var texture1 = new THREE.TextureLoader().load('assets/height.jpg');
+		texture1.wrapS = THREE.RepeatWrapping;
+		texture1.wrapT = THREE.RepeatWrapping;
+
+		var texture2 = new THREE.TextureLoader().load('assets/normal.jpg');
+		texture2.wrapS = THREE.RepeatWrapping;
+		texture2.wrapT = THREE.RepeatWrapping;
+
+		That.groundMaterial = new THREE.ShaderMaterial({
+			uniforms: {
+				u_time: {
+					value: 0.0
+				},
+				u_color: {
+					value: new THREE.Vector3(1,1,1)
+				},
+				u_texture: {
+					value: texture1
+				},
+				u_texture2: {
+					value: texture2
+				},
+			},
+			vertexShader: glslify('./glsl/ground.vert'),
+			fragmentShader: glslify('./glsl/ground.frag'),
+			side: THREE.DoubleSide,
 		});
-		var ground = new THREE.Mesh(groundGeo, groundMat);
-		ground.rotation.x = -Math.PI / 2;
-		ground.position.y = -200;
-		this.scene.add(ground);
+
+
+		var geometry = new THREE.PlaneBufferGeometry(5000, 5000, _w - 1, _h - 1);
+		geometry.rotateX(-Math.PI / 2);
+
+		var ground = new THREE.Mesh(geometry, That.groundMaterial);
+		ground.position.set(0, -300, 0);
 		ground.receiveShadow = true;
+		That.scene.add(ground);
 	}
 
-
+	getImgData(_image, _w, _h) {
+		var imgCanvas = document.createElement('canvas');
+		imgCanvas.style.display = "block";
+		imgCanvas.id = "imgCanvas";
+		document.body.appendChild(imgCanvas);
+		imgCanvas.width = _w;
+		imgCanvas.height = _h;
+		var imgContext = imgCanvas.getContext("2d");
+		imgContext.drawImage(_image, 0, 0, _w, _h, 0, 0, _w, _h);
+		imgContext.restore();
+		var imgData = imgContext.getImageData(0, 0, _w, _h);
+		document.body.removeChild(imgCanvas);
+		return imgData.data;
+	}
 
 	animate() {
 		let newTime = Date.now();
@@ -213,12 +256,14 @@ class Scene {
 	render(dt) {
 		if (this.stats) this.stats.update();
 
+		if(That.groundMaterial)That.groundMaterial.uniforms.u_time.value+=dt;
+
 		this.renderer.render(this.scene, this.camera);
 
-		if (this.composer){
+		if (this.composer) {
 			this.composer.render();
 
-		} 
+		}
 	}
 }
 

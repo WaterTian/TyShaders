@@ -8,28 +8,31 @@ import OrbitContructor from 'three-orbit-controls';
 var OrbitControls = OrbitContructor(THREE);
 import Stats from 'stats.js';
 
+import dat from 'dat-gui';
+
+
 
 import './postprocessing/EffectComposer';
 import './postprocessing/RenderPass';
 import './postprocessing/ShaderPass';
 import './postprocessing/MaskPass';
-import './postprocessing/CopyShader';
-import './postprocessing/ScreenShader';
-// require('./postprocessing/EffectComposer');
-// require('./postprocessing/RenderPass');
-// require('./postprocessing/ShaderPass');
-// require('./postprocessing/MaskPass');
-// require('./postprocessing/CopyShader');
-// require('./postprocessing/ScreenShader');
+import './postprocessing/UnrealBloomPass';
 
 
+import './shaders/CopyShader';
+import './shaders/FXAAShader';
+import './shaders/ConvolutionShader';
+import './shaders/LuminosityHighPassShader';
+import './shaders/ScreenShader';
 
+
+var That;
 var time = 0;
 
 class Scene {
 
 	constructor() {
-		let that = this;
+		That = this;
 
 		this.start();
 	}
@@ -62,6 +65,7 @@ class Scene {
 		this.renderer.shadowMap.enabled = true;
 		this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
+
 		// controls
 		this.controls = new OrbitControls(this.camera, this.renderer.domElement);
 		this.controls.update();
@@ -75,6 +79,7 @@ class Scene {
 		this.addLights();
 		this.addObjects();
 		this.initGround();
+		this.loadModel();
 
 
 		time = Date.now();
@@ -88,6 +93,18 @@ class Scene {
 		let effect = new THREE.ShaderPass(THREE.ScreenShader);
 		effect.renderToScreen = true;
 		this.composer.addPass(effect);
+
+
+
+		// var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
+		// effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
+		// this.composer.addPass(effectFXAA);
+
+
+		// var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85); //1.0, 9, 0.5, 512);
+		// bloomPass.renderToScreen = true;
+		// this.composer.addPass(bloomPass);
+
 	}
 
 
@@ -126,12 +143,12 @@ class Scene {
 	}
 
 	addObjects() {
-		var geometry = new THREE.SphereGeometry(1, 4, 4);
+		var geometry = new THREE.SphereGeometry(1, 14, 4);
 		for (var i = 0; i < 100; i++) {
 			var material = new THREE.MeshPhongMaterial({
 				color: 0xffffff * Math.random(),
 				dithering: true,
-				shading: THREE.FlatShading
+				flatShading: true
 			});
 			var mesh = new THREE.Mesh(geometry, material);
 			mesh.position.set(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize();
@@ -144,8 +161,28 @@ class Scene {
 			mesh.receiveShadow = true;
 		}
 
+	}
 
+	loadModel() {
+		var loader = new THREE.JSONLoader();
+		loader.load('assets/beijing.js', function(geometry) {
 
+			var material = new THREE.MeshPhongMaterial({
+				color: 0xffffff * Math.random(),
+				dithering: true,
+				flatShading: true,
+				side: THREE.DoubleSide,
+				// wireframe: true,
+			});
+
+			var mesh = new THREE.Mesh(geometry, material);
+			mesh.scale.set(20,20,20);
+			mesh.position.set(0, -300,0);
+			That.scene.add(mesh);
+			
+			mesh.castShadow = true;
+			mesh.receiveShadow = true;
+		});
 	}
 
 	initGround() {
@@ -177,7 +214,11 @@ class Scene {
 		if (this.stats) this.stats.update();
 
 		this.renderer.render(this.scene, this.camera);
-		if (this.composer) this.composer.render();
+
+		if (this.composer){
+			this.composer.render();
+
+		} 
 	}
 }
 

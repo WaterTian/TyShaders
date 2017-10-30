@@ -13,8 +13,8 @@ THREE.CopyShader = {
 
 	uniforms: {
 
-		"u_texture": { type: "t", value: null },
-		"opacity":  { type: "f", value: 1.0 }
+		"u_texture": { value: null },
+		"opacity":  { value: 1.0 }
 
 	},
 
@@ -49,3 +49,4 @@ THREE.CopyShader = {
 	].join( "\n" )
 
 };
+

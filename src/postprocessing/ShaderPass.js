@@ -7,6 +7,8 @@ import * as THREE from 'three';
 
 THREE.ShaderPass = function(shader, textureID) {
 
+	THREE.Pass.call( this );
+
 	this.textureID = (textureID !== undefined) ? textureID : "u_texture";
 
 	if (shader instanceof THREE.ShaderMaterial) {
@@ -45,9 +47,11 @@ THREE.ShaderPass = function(shader, textureID) {
 
 };
 
-THREE.ShaderPass.prototype = {
+THREE.ShaderPass.prototype = Object.assign( Object.create( THREE.Pass.prototype ), {
 
-	render: function(renderer, writeBuffer, readBuffer, delta) {
+	constructor: THREE.ShaderPass,
+
+	render: function( renderer, writeBuffer, readBuffer, delta, maskActive ) {
 
 		if (this.uniforms[this.textureID]) {
 			this.uniforms[this.textureID].value = readBuffer;
@@ -70,4 +74,4 @@ THREE.ShaderPass.prototype = {
 
 	}
 
-};
+});

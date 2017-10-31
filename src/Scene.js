@@ -24,6 +24,7 @@ import './shaders/FXAAShader';
 import './shaders/ConvolutionShader';
 import './shaders/LuminosityHighPassShader';
 import './shaders/ScreenShader';
+import './shaders/GodrayShader';
 
 
 var That;
@@ -44,6 +45,7 @@ class Scene {
 		this.camera;
 		this.scene;
 		this.groundMaterial;
+		this.mesh;
 
 		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 50000);
 		this.camera.position.set(0, 0, 500);
@@ -56,7 +58,7 @@ class Scene {
 			antialias: true,
 			autoClearColor: true
 		});
-		this.renderer.setClearColor(0xcccccc);
+		this.renderer.setClearColor(0x454545);
 		// this.renderer.setPixelRatio(window.devicePixelRatio);
 		this.renderer.setSize(window.innerWidth, window.innerHeight);
 		document.body.appendChild(this.renderer.domElement);
@@ -92,16 +94,19 @@ class Scene {
 		this.composer = new THREE.EffectComposer(this.renderer);
 		this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
 
-        //扛锯齿
-		var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
-		effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
+		//扛锯齿
+		var effectFXAA = new THREE.ShaderPass(THREE.FXAAShader);
+		effectFXAA.uniforms['resolution'].value.set(1 / window.innerWidth, 1 / window.innerHeight);
 		this.composer.addPass(effectFXAA);
 
 
-		let effect = new THREE.ShaderPass(THREE.ScreenShader);
-		effect.renderToScreen = true;
-		this.composer.addPass(effect);
+		// var effect = new THREE.ShaderPass(THREE.GodrayShader);
+		// effect.renderToScreen = true;
+		// this.composer.addPass(effect);
 
+		var effect2 = new THREE.ShaderPass(THREE.ScreenShader);
+		effect2.renderToScreen = true;
+		this.composer.addPass(effect2);
 
 		// var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85); //1.0, 9, 0.5, 512);
 		// bloomPass.renderToScreen = true;
@@ -112,36 +117,63 @@ class Scene {
 
 
 	addLights() {
-		this.ambient = new THREE.AmbientLight(0x333333);
-		this.scene.add(this.ambient);
+		// this.ambient = new THREE.AmbientLight(0x333333);
+		// this.scene.add(this.ambient);
 
-		this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-		this.directionalLight.color.setHSL(0.1, 1, 0.95);
-		this.directionalLight.position.set(-1, 1.75, 1);
-		this.directionalLight.position.multiplyScalar(30);
-		this.directionalLight.castShadow = true;
-		this.directionalLight.shadow.mapSize.width = 2048;
-		this.directionalLight.shadow.mapSize.height = 2048;
-		this.scene.add(this.directionalLight);
-		var d = 400;
-		this.directionalLight.shadow.camera.left = -d;
-		this.directionalLight.shadow.camera.right = d;
-		this.directionalLight.shadow.camera.top = d;
-		this.directionalLight.shadow.camera.bottom = -d;
-		this.directionalLight.shadow.camera.far = 3500;
-		this.directionalLight.shadow.bias = -0.0001;
+		// this.directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+		// this.directionalLight.color.setHSL(0.1, 1, 0.95);
+		// this.directionalLight.position.set(-1, 1.75, 1);
+		// this.directionalLight.position.multiplyScalar(30);
+		// this.directionalLight.castShadow = true;
+		// this.directionalLight.shadow.mapSize.width = 2048;
+		// this.directionalLight.shadow.mapSize.height = 2048;
+		// this.scene.add(this.directionalLight);
+		// var d = 400;
+		// this.directionalLight.shadow.camera.left = -d;
+		// this.directionalLight.shadow.camera.right = d;
+		// this.directionalLight.shadow.camera.top = d;
+		// this.directionalLight.shadow.camera.bottom = -d;
+		// this.directionalLight.shadow.camera.far = 3500;
+		// this.directionalLight.shadow.bias = -0.0001;
 
 
 
-		// this.pointLight = new THREE.PointLight(0xffffff, 1, 700);
-		// this.pointLight.castShadow = true;
-		// this.pointLight.shadow.camera.near = 10;
-		// this.pointLight.shadow.camera.far = 700;
-		// this.pointLight.shadow.bias = 0.1;
-		// this.pointLight.shadow.darkness = 0.45;
-		// this.pointLight.shadow.mapSize.width = 4096;
-		// this.pointLight.shadow.mapSize.height = 2048;
-		// this.scene.add(this.pointLight);
+
+
+
+		// var shanLight = new THREE.AmbientLight(0x5775b2);
+		// this.scene.add(shanLight);
+		// shanLight.intensity = 1.6;
+
+		// var dirLight = new THREE.DirectionalLight(0x4a7bd8);
+		// this.scene.add(dirLight);
+		// dirLight.position.set(-20, 50, 50);
+		// dirLight.intensity = 2;
+		// dirLight.rotation.z = THREE.Math.degToRad(-180);
+
+
+
+		var pointLight1 = new THREE.PointLight(0x28fff8);
+		pointLight1.position.set(-10, 50, 30);
+		this.scene.add(pointLight1);
+		pointLight1.intensity = 3;
+		pointLight1.distance = 100;
+
+		var pointLight2 = new THREE.PointLight(0x8e09ff);
+		pointLight2.position.set(30, -10, 10);
+		this.scene.add(pointLight2);
+		pointLight2.intensity = 2;
+		pointLight2.distance = 60;
+
+
+		var sphere3 = new THREE.SphereGeometry(2, 16, 8);
+		pointLight1.add(new THREE.Mesh(sphere3, new THREE.MeshBasicMaterial({
+			color: 0x28fff8
+		})));
+		pointLight2.add(new THREE.Mesh(sphere3, new THREE.MeshBasicMaterial({
+			color: 0x8e09ff
+		})));
+
 	}
 
 	addObjects() {
@@ -170,20 +202,20 @@ class Scene {
 		loader.load('assets/beijing.js', function(geometry) {
 
 			var material = new THREE.MeshPhongMaterial({
-				color: 0xffffff * Math.random(),
+				color: 0xffffff,
 				dithering: true,
 				flatShading: true,
 				side: THREE.DoubleSide,
 				// wireframe: true,
 			});
 
-			var mesh = new THREE.Mesh(geometry, material);
-			mesh.scale.set(20, 20, 20);
-			mesh.position.set(0, -300, 0);
-			That.scene.add(mesh);
+			That.mesh = new THREE.Mesh(geometry, material);
+			That.mesh.scale.set(5, 5, 5);
+			That.mesh.position.set(0, -60, 0);
+			That.scene.add(That.mesh);
 
-			mesh.castShadow = true;
-			mesh.receiveShadow = true;
+			That.mesh.castShadow = true;
+			That.mesh.receiveShadow = true;
 		});
 	}
 
@@ -206,7 +238,7 @@ class Scene {
 					value: 0.0
 				},
 				u_color: {
-					value: new THREE.Vector3(1,1,1)
+					value: new THREE.Vector3(.5, .5, .5)
 				},
 				u_texture: {
 					value: texture1
@@ -221,11 +253,11 @@ class Scene {
 		});
 
 
-		var geometry = new THREE.PlaneBufferGeometry(5000, 5000, 256, 256);
+		var geometry = new THREE.PlaneBufferGeometry(1000, 1000, 256, 256);
 		geometry.rotateX(-Math.PI / 2);
 
 		var ground = new THREE.Mesh(geometry, That.groundMaterial);
-		ground.position.set(0, -300, 0);
+		ground.position.set(0, -60, 0);
 		ground.receiveShadow = true;
 		That.scene.add(ground);
 	}
@@ -250,6 +282,9 @@ class Scene {
 		requestAnimationFrame(this.animate.bind(this));
 		this.render(newTime - time);
 		time = newTime;
+
+		
+		if(That.mesh)That.mesh.rotateY(.01);
 	}
 
 
@@ -257,7 +292,7 @@ class Scene {
 	render(dt) {
 		if (this.stats) this.stats.update();
 
-		if(That.groundMaterial)That.groundMaterial.uniforms.u_time.value+=dt;
+		if (That.groundMaterial) That.groundMaterial.uniforms.u_time.value += dt;
 
 		this.renderer.render(this.scene, this.camera);
 

@@ -10,9 +10,9 @@ void main()
 {
 	vUv = uv;
 	vUv.x *=2.;
-	vUv.y += sNoise(vec2(vUv.y,u_time*0.00001))*1.5;
+	vUv.y += sNoise(vec2(vUv.y,u_time*0.00001))*2.;
 
-	float h = texture2D( u_texture, vUv ).g * 256.;
+	float h = texture2D( u_texture, vUv ).g * 60.;
 
 	vec3 p = vec3(position.x,h,position.z);
 

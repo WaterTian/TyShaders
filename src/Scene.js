@@ -45,7 +45,7 @@ class Scene {
 		this.scene;
 		this.groundMaterial;
 
-		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+		this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 50000);
 		this.camera.position.set(0, 0, 500);
 		this.scene = new THREE.Scene();
 		this.scene.add(this.camera);
@@ -91,15 +91,16 @@ class Scene {
 	initEffectComposer() {
 		this.composer = new THREE.EffectComposer(this.renderer);
 		this.composer.addPass(new THREE.RenderPass(this.scene, this.camera));
+
+        //扛锯齿
+		var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
+		effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
+		this.composer.addPass(effectFXAA);
+
+
 		let effect = new THREE.ShaderPass(THREE.ScreenShader);
 		effect.renderToScreen = true;
 		this.composer.addPass(effect);
-
-
-
-		// var effectFXAA = new THREE.ShaderPass( THREE.FXAAShader );
-		// effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
-		// this.composer.addPass(effectFXAA);
 
 
 		// var bloomPass = new THREE.UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 1.5, 0.4, 0.85); //1.0, 9, 0.5, 512);
@@ -220,7 +221,7 @@ class Scene {
 		});
 
 
-		var geometry = new THREE.PlaneBufferGeometry(5000, 5000, _w - 1, _h - 1);
+		var geometry = new THREE.PlaneBufferGeometry(5000, 5000, 256, 256);
 		geometry.rotateX(-Math.PI / 2);
 
 		var ground = new THREE.Mesh(geometry, That.groundMaterial);

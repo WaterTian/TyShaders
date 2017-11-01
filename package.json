@@ -26,6 +26,7 @@
     "browserify": "^14.4.0",
     "budo": "^10.0.4",
     "glslify": "^6.1.0",
-    "uglify-js": "^3.0.26"
+    "uglify-js": "^3.0.26",
+    "vconsole": "^3.0.0"
   }
 }

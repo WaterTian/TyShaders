@@ -5,7 +5,6 @@ var glslify = require('glslify');
 THREE.ScreenShader = {
 	uniforms: {
 		u_time: {
-			type: 'f',
 			value: 0.0
 		},
 		u_resolution: {
